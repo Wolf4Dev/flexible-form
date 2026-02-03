@@ -154,7 +154,7 @@ export default function FileUpload({ onFilesUploaded }: FileUploadProps) {
             ref={folderInputRef}
             type="file"
             multiple
-            // @ts-ignore - webkitdirectory is not in the type definition
+            // @ts-expect-error - webkitdirectory is not in the type definition
             webkitdirectory="true"
             className="hidden"
             onChange={handleFileSelect}

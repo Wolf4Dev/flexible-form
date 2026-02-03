@@ -126,7 +126,7 @@ export async function processAllDocuments(
     try {
       // Skip temporary files
       if (file.name.startsWith('~$')) {
-        console.log(`Skipping temporary file: ${file.name}`);
+        console.warn(`Skipping temporary file: ${file.name}`);
         continue;
       }
 
