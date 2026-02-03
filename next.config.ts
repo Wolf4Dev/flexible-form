@@ -6,10 +6,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
 
-  // Experimental features
-  experimental: {
-    typedRoutes: true,
-  },
+  // Typed routes (moved from experimental in Next.js 16)
+  typedRoutes: true,
 
   // Image optimization
   images: {
