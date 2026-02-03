@@ -4,18 +4,12 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
+import { FileText, Upload, Download, CheckCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -25,159 +19,134 @@ export default function Home() {
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           {/* Hero Section */}
-          <div className="text-center">
+          <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
-              Powered by shadcn/ui
+              Hệ Thống Xử Lý Tài Liệu Tự Động
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-              Welcome to Flexible Form
+              Hệ Thống Xử Lý Tài Liệu
             </h1>
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              A professional Next.js application built with TypeScript, Tailwind CSS, shadcn/ui
-              and best practices for scalable development.
+              Tự động điền thông tin vào tài liệu Word và Excel một cách nhanh chóng và chính xác.
+              Hỗ trợ upload folder và file, xử lý hàng loạt tài liệu.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button size="lg">Get Started</Button>
+              <Link href="/document-processor">
+                <Button size="lg">
+                  <Upload className="mr-2 h-5 w-5" />
+                  Bắt Đầu Ngay
+                </Button>
+              </Link>
               <Button variant="outline" size="lg">
-                Learn More
+                Hướng Dẫn Sử Dụng
               </Button>
             </div>
           </div>
 
-          {/* Alert Section */}
-          <div className="mt-12">
-            <Alert>
-              <AlertTitle>Heads up!</AlertTitle>
-              <AlertDescription>
-                This project includes 36+ shadcn/ui components ready to use.
-              </AlertDescription>
-            </Alert>
+          {/* Features Grid */}
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Upload className="h-6 w-6 text-blue-500" />
+                  <CardTitle>Upload Dễ Dàng</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Hỗ trợ upload file hoặc folder với drag & drop. Tự động nhận diện file Word (.docx) và Excel (.xlsx).
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <FileText className="h-6 w-6 text-green-500" />
+                  <CardTitle>Xử Lý Tự Động</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Điền form một lần, hệ thống tự động thay thế tất cả placeholder trong toàn bộ tài liệu.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Download className="h-6 w-6 text-purple-500" />
+                  <CardTitle>Download Nhanh</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Tải xuống từng file hoặc tất cả file dưới dạng ZIP. Xem trước kết quả trước khi download.
+                </CardDescription>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Tabs Section */}
-          <Tabs defaultValue="components" className="mt-12">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="components">Components</TabsTrigger>
-              <TabsTrigger value="features">Features</TabsTrigger>
-              <TabsTrigger value="demo">Demo Form</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="components" className="mt-6">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>36+ Components</CardTitle>
-                    <CardDescription>Fully customizable UI components</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      Button, Card, Input, Dialog, Select, Form, and many more components ready
-                      to use.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>TypeScript First</CardTitle>
-                    <CardDescription>Fully typed components</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      All components are fully typed with TypeScript for better developer
-                      experience.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Customizable</CardTitle>
-                    <CardDescription>Tailwind CSS powered</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      Easy to customize with Tailwind CSS classes and CSS variables.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="features" className="mt-6">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Professional Structure</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <Badge variant="outline">src/components/ui</Badge>
-                    <Badge variant="outline">src/lib</Badge>
-                    <Badge variant="outline">src/hooks</Badge>
-                    <Badge variant="outline">src/utils</Badge>
-                    <p className="text-sm text-muted-foreground pt-2">
-                      Organized folder structure following industry best practices.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Team Members</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center gap-4">
-                      <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">Developer</p>
-                        <p className="text-xs text-muted-foreground">dev@example.com</p>
-                      </div>
+          {/* How It Works */}
+          <div className="mt-16">
+            <h2 className="text-3xl font-bold text-center mb-8">Cách Sử Dụng</h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {[
+                {
+                  step: '1',
+                  title: 'Upload',
+                  description: 'Tải lên file hoặc folder chứa tài liệu',
+                  icon: Upload,
+                },
+                {
+                  step: '2',
+                  title: 'Điền Form',
+                  description: 'Nhập thông tin vào các trường bắt buộc',
+                  icon: FileText,
+                },
+                {
+                  step: '3',
+                  title: 'Xử Lý',
+                  description: 'Hệ thống tự động thay thế placeholder',
+                  icon: CheckCircle,
+                },
+                {
+                  step: '4',
+                  title: 'Download',
+                  description: 'Tải xuống tài liệu đã xử lý',
+                  icon: Download,
+                },
+              ].map((item) => (
+                <div key={item.step} className="text-center">
+                  <div className="flex justify-center mb-4">
+                    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-blue-500 text-white text-2xl font-bold">
+                      {item.step}
                     </div>
-                    <Separator />
-                    <div className="flex items-center gap-4">
-                      <Skeleton className="h-10 w-10 rounded-full" />
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-[100px]" />
-                        <Skeleton className="h-3 w-[150px]" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
+                  </div>
+                  <div className="flex justify-center mb-2">
+                    <item.icon className="h-8 w-8 text-gray-600" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-            <TabsContent value="demo" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Create an account</CardTitle>
-                  <CardDescription>
-                    Enter your information below to create your account
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Enter your name" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="Enter your email" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" placeholder="Enter your password" />
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <Button variant="outline">Cancel</Button>
-                  <Button>Create Account</Button>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-          </Tabs>
+          {/* CTA Section */}
+          <div className="mt-16 text-center bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-12">
+            <h2 className="text-3xl font-bold mb-4">Sẵn Sàng Bắt Đầu?</h2>
+            <p className="text-lg text-muted-foreground mb-6">
+              Xử lý hàng loạt tài liệu chỉ trong vài phút
+            </p>
+            <Link href="/document-processor">
+              <Button size="lg" className="text-lg">
+                <Upload className="mr-2 h-5 w-5" />
+                Bắt Đầu Xử Lý Tài Liệu
+              </Button>
+            </Link>
+          </div>
         </div>
       </main>
 
@@ -185,3 +154,4 @@ export default function Home() {
     </div>
   );
 }
+
