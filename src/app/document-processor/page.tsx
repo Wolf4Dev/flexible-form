@@ -67,7 +67,7 @@ export default function DocumentProcessorPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Hệ Thống Xử Lý Tài Liệu
+            Made by Nguyen Van Phung
           </h1>
           <p className="text-gray-600 text-lg">
             Tự động điền thông tin vào tài liệu Word và Excel
