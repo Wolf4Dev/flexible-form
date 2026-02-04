@@ -1,16 +1,19 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import FileUpload from '@/components/features/file-upload';
 import DataForm from '@/components/features/data-form';
 import DocumentPreview from '@/components/features/document-preview';
 import StatusAlert from '@/components/features/status-alert';
 import StepHeader from '@/components/features/step-header';
 import FileTypeIndicator from '@/components/features/file-type-indicator';
+import { Button } from '@/components/ui/button';
 import { UploadedFile, FormData, ProcessedDocument } from '@/types/document';
 import { processAllDocuments, extractFormDataFromExcel } from '@/utils/document-processor';
 import { isDataSourceExcel, isTemplateFile } from '@/utils/excel-data-extractor';
 import { mergeFormData } from '@/utils/form-helpers';
+import { isAuthenticated, logout, getUsername } from '@/utils/auth';
+import { LogOut, User } from 'lucide-react';
 
 type ProcessingState = 'idle' | 'processing' | 'success' | 'error';
 
@@ -21,6 +24,19 @@ export default function DocumentProcessorPage() {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [folderName, setFolderName] = useState<string>('');
   const [extractedData, setExtractedData] = useState<Partial<FormData>>({});
+
+  // Check authentication on mount
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      window.location.href = '/login';
+    }
+  }, []);
+
+  // Handle logout
+  const handleLogout = () => {
+    logout();
+    window.location.href = '/login';
+  };
 
   // Count file types
   const fileTypeCounts = useMemo(() => {
@@ -87,14 +103,33 @@ export default function DocumentProcessorPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
       <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Made by Nguyen Van Phung
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Tự động điền thông tin vào tài liệu Word và Excel
-          </p>
+        {/* Header with Logout */}
+        <div className="flex justify-between items-start mb-8">
+          <div className="flex-1 text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Made by Nguyen Van Phung
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Tự động điền thông tin vào tài liệu Word và Excel
+            </p>
+          </div>
+
+          {/* User Info & Logout */}
+          <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg shadow-sm border">
+            <div className="flex items-center gap-2 text-sm">
+              <User className="w-4 h-4 text-gray-600" />
+              <span className="font-medium text-gray-700">{getUsername()}</span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <LogOut className="w-4 h-4 mr-1" />
+              Đăng xuất
+            </Button>
+          </div>
         </div>
 
         {/* Status Alert */}

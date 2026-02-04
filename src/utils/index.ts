@@ -10,3 +10,4 @@ export * from './validation';
 export * from './excel-data-extractor';
 export * from './document-processor';
 export * from './form-helpers';
+export * from './auth';
