@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import FileUpload from '@/components/features/file-upload';
 import DataForm from '@/components/features/data-form';
 import DocumentPreview from '@/components/features/document-preview';
 import StatusAlert from '@/components/features/status-alert';
 import StepHeader from '@/components/features/step-header';
+import FileTypeIndicator from '@/components/features/file-type-indicator';
 import { UploadedFile, FormData, ProcessedDocument } from '@/types/document';
-import { processAllDocuments } from '@/utils/document-processor';
+import { processAllDocuments, extractFormDataFromExcel } from '@/utils/document-processor';
+import { isDataSourceExcel, isTemplateFile } from '@/utils/excel-data-extractor';
+import { mergeFormData } from '@/utils/form-helpers';
 
 type ProcessingState = 'idle' | 'processing' | 'success' | 'error';
 
@@ -17,6 +20,19 @@ export default function DocumentProcessorPage() {
   const [processingState, setProcessingState] = useState<ProcessingState>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [folderName, setFolderName] = useState<string>('');
+  const [extractedData, setExtractedData] = useState<Partial<FormData>>({});
+
+  // Count file types
+  const fileTypeCounts = useMemo(() => {
+    const dataSourceCount = uploadedFiles.filter(f =>
+      f.name.endsWith('.xlsx') && isDataSourceExcel(f.name)
+    ).length;
+    const templateCount = uploadedFiles.filter(f =>
+      isTemplateFile(f.name)
+    ).length;
+
+    return { dataSourceCount, templateCount };
+  }, [uploadedFiles]);
 
   const handleFilesUploaded = (files: UploadedFile[]) => {
     setUploadedFiles(files);
@@ -31,9 +47,13 @@ export default function DocumentProcessorPage() {
     } else {
       setFolderName('tai-lieu-da-xu-ly');
     }
+
+    // Auto-extract data from Excel file if present
+    const autoData = extractFormDataFromExcel(files);
+    setExtractedData(autoData);
   };
 
-  const handleFormSubmit = async (data: FormData) => {
+  const handleFormSubmit = async (data: Partial<FormData>) => {
     if (uploadedFiles.length === 0) {
       setErrorMessage('Vui lòng tải lên ít nhất một file trước khi xử lý');
       setProcessingState('error');
@@ -44,7 +64,10 @@ export default function DocumentProcessorPage() {
     setErrorMessage('');
 
     try {
-      const processed = await processAllDocuments(uploadedFiles, data);
+      // Merge extracted data with manually input data
+      // Ensures all fields have values (no undefined)
+      const mergedData = mergeFormData(extractedData, data);
+      const processed = await processAllDocuments(uploadedFiles, mergedData);
 
       if (processed.length === 0) {
         setErrorMessage('Không có file nào được xử lý thành công');
@@ -90,6 +113,15 @@ export default function DocumentProcessorPage() {
           <div className="bg-white rounded-lg shadow-sm border p-2">
             <StepHeader step={1} title="Upload Tài Liệu" />
             <FileUpload onFilesUploaded={handleFilesUploaded} />
+            {uploadedFiles.length > 0 && (
+              <div className="mt-4">
+                <FileTypeIndicator
+                  totalFiles={uploadedFiles.length}
+                  dataSourceCount={fileTypeCounts.dataSourceCount}
+                  templateCount={fileTypeCounts.templateCount}
+                />
+              </div>
+            )}
           </div>
 
           {/* Step 2: Fill Form */}
@@ -98,6 +130,7 @@ export default function DocumentProcessorPage() {
               <StepHeader step={2} title="Nhập Thông Tin" />
               <DataForm
                 onSubmit={handleFormSubmit}
+                initialData={extractedData}
                 disabled={processingState === 'processing'}
               />
             </div>

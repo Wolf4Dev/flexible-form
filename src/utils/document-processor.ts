@@ -3,6 +3,7 @@ import PizZip from 'pizzip';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import { FormData, UploadedFile, ProcessedDocument } from '@/types/document';
+import { extractDataFromExcel, isDataSourceExcel, isTemplateFile } from './excel-data-extractor';
 
 /**
  * Replace placeholders in Word documents (.doc, .docx)
@@ -113,6 +114,23 @@ export async function processExcelDocument(
 }
 
 /**
+ * Extract data from data source Excel files
+ * Returns the extracted form data or empty object if not a data source
+ */
+export function extractFormDataFromExcel(files: UploadedFile[]): Partial<FormData> {
+  // Find the first data source Excel file
+  const dataSourceFile = files.find(file =>
+    file.name.endsWith('.xlsx') && isDataSourceExcel(file.name)
+  );
+
+  if (!dataSourceFile) {
+    return {};
+  }
+
+  return extractDataFromExcel(dataSourceFile.content);
+}
+
+/**
  * Process all uploaded files
  */
 export async function processAllDocuments(
@@ -127,6 +145,18 @@ export async function processAllDocuments(
       // Skip temporary files
       if (file.name.startsWith('~$')) {
         console.warn(`Skipping temporary file: ${file.name}`);
+        continue;
+      }
+
+      // Skip data source Excel files (they are not templates to be processed)
+      if (file.name.endsWith('.xlsx') && isDataSourceExcel(file.name)) {
+        console.warn(`Skipping data source Excel file: ${file.name}`);
+        continue;
+      }
+
+      // Process template files
+      if (!isTemplateFile(file.name)) {
+        console.warn(`Skipping non-template file: ${file.name}`);
         continue;
       }
 

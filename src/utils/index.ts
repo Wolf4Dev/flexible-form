@@ -7,3 +7,6 @@ export * from './cn';
 export * from './format';
 export * from './file-helpers';
 export * from './validation';
+export * from './excel-data-extractor';
+export * from './document-processor';
+export * from './form-helpers';

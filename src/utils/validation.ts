@@ -3,10 +3,11 @@
  */
 
 import { FormData } from '@/types/document';
-import { DOCUMENT_FIELDS } from '@/constants/fields';
+import { MANUAL_INPUT_FIELDS } from '@/constants/fields';
 
 /**
  * Validate form data
+ * Only validates manually input fields, not auto-extracted fields
  */
 export const validateFormData = (data: Partial<FormData>): {
   isValid: boolean;
@@ -14,7 +15,8 @@ export const validateFormData = (data: Partial<FormData>): {
 } => {
   const errors: Partial<Record<keyof FormData, string>> = {};
 
-  DOCUMENT_FIELDS.forEach(field => {
+  // Only validate required fields that need manual input
+  MANUAL_INPUT_FIELDS.forEach(field => {
     if (field.required && !data[field.key as keyof FormData]) {
       errors[field.key as keyof FormData] = `${field.label} là bắt buộc`;
     }
@@ -30,7 +32,7 @@ export const validateFormData = (data: Partial<FormData>): {
  * Check if form data is complete
  */
 export const isFormComplete = (data: Partial<FormData>): boolean => {
-  const requiredFields = DOCUMENT_FIELDS.filter(f => f.required);
+  const requiredFields = MANUAL_INPUT_FIELDS.filter(f => f.required);
   return requiredFields.every(field => !!data[field.key as keyof FormData]);
 };
 
@@ -38,7 +40,7 @@ export const isFormComplete = (data: Partial<FormData>): boolean => {
  * Get missing required fields
  */
 export const getMissingFields = (data: Partial<FormData>): string[] => {
-  const requiredFields = DOCUMENT_FIELDS.filter(f => f.required);
+  const requiredFields = MANUAL_INPUT_FIELDS.filter(f => f.required);
   return requiredFields
     .filter(field => !data[field.key as keyof FormData])
     .map(field => field.label);
